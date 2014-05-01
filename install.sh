@@ -169,15 +169,19 @@ fi
 PHPMYADMIN="1"
 
 if [ -n "$PHPMYADMIN" ] && [ ! -f /etc/phpmyadmin/config.inc.php ]; then
-
+	pass="root" #or what you want
+	echo "Password: $pass"
 	# Used debconf-get-selections to find out what questions will be asked
-	# This command needs debconf-utils
-
-	# Handy for debugging. clear answers phpmyadmin: echo PURGE | debconf-communicate phpmyadmin
-
-	apt-get install -y phpmyadmin
-	
-	# /!\ For php my admin you need to run it manually there's a bug with new param :/
+	echo "Setup PhpMyAdmin"
+	echo "phpmyadmin phpmyadmin/dbconfig-install boolean true" | debconf-set-selections
+	echo "phpmyadmin phpmyadmin/app-password-confirm password $pass" | debconf-set-selections
+	echo "phpmyadmin phpmyadmin/mysql/admin-pass password $pass" | debconf-set-selections
+	echo "phpmyadmin phpmyadmin/mysql/app-pass password $pass" | debconf-set-selections
+	echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2" | debconf-set-selections
+	apt-get install -y -qq phpmyadmin
+	ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf.d/phpmyadmin
+	service apache2 restart
+	echo "PhpMyAdmin is now available at http://${1}/phpmyadmin/\n"
 fi
 
 # Create Database
