@@ -144,7 +144,7 @@ npm install -g grunt-cli
 
 # Install mongodb (optionnal)
 # ---------------
-MONGO="1"
+#MONGO="1"
 if [ -n "$MONGO" ]; then
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
     echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
@@ -166,7 +166,7 @@ fi
 
 # Install PHPMyadmin (optional)
 
-PHPMYADMIN="1"
+#PHPMYADMIN="1"
 
 if [ -n "$PHPMYADMIN" ] && [ ! -f /etc/phpmyadmin/config.inc.php ]; then
 	pass="root" #or what you want
