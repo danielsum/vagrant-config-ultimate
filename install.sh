@@ -2,6 +2,7 @@
 
 # Config
 # -------------
+# Edit the config file and uncomment/comment to activate plugin or not
 pass="root"
 dbname="yourapp"
 xdebug="1"
