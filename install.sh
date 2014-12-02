@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+# Config
+# -------------
+pass="root"
+dbname="yourapp"
+xdebug="1"
+
+PHPMYADMIN="1"
+#MONGO="1"
+#REDIS="1"
+
 # Update the box
 # --------------
 # Downloads the package lists from the repositories
@@ -68,8 +78,6 @@ apt-get install libavcodec53 libavdevice53 libavformat53 libavutil51 libpostproc
 # Install Xdebug
 # --------------
 
-xdebug="1"
-
 if [ -n "$xdebug" ]; then
 echo "--- Installing and configuring Xdebug ---"
 sudo apt-get install -y php5-xdebug
@@ -107,7 +115,7 @@ apt-get install -y git-core
 
 # Install SVN (optional)
 # -----------
-# apt-get install subversion
+ apt-get install subversion
 
 # Install Composer
 # ----------------
@@ -144,7 +152,7 @@ npm install -g grunt-cli
 
 # Install mongodb (optionnal)
 # ---------------
-#MONGO="1"
+
 if [ -n "$MONGO" ]; then
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
     echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
@@ -159,35 +167,30 @@ fi
 
 # Install Redis (optional)
 
-#REDIS="1"
 if [ -n "$REDIS" ]; then
     wget http://download.redis.io/redis-stable.tar.gz && tar xvzf redis-stable.tar.gz && cd redis-stable && make
 fi
 
 # Install PHPMyadmin (optional)
 
-#PHPMYADMIN="1"
-
 if [ -n "$PHPMYADMIN" ] && [ ! -f /etc/phpmyadmin/config.inc.php ]; then
-	pass="root" #or what you want
-	echo "Password: $pass"
-	# Used debconf-get-selections to find out what questions will be asked
-	echo "Setup PhpMyAdmin"
-	echo "phpmyadmin phpmyadmin/dbconfig-install boolean true" | debconf-set-selections
-	echo "phpmyadmin phpmyadmin/app-password-confirm password $pass" | debconf-set-selections
-	echo "phpmyadmin phpmyadmin/mysql/admin-pass password $pass" | debconf-set-selections
-	echo "phpmyadmin phpmyadmin/mysql/app-pass password $pass" | debconf-set-selections
-	echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2" | debconf-set-selections
-	apt-get install -y -qq phpmyadmin
-	ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf.d/phpmyadmin
-	service apache2 restart
-	echo "PhpMyAdmin is now available at http://${1}/phpmyadmin/\n"
+    echo "Setup PhpMyAdmin"
+    echo "phpmyadmin phpmyadmin/dbconfig-install boolean true" | debconf-set-selections
+    echo "phpmyadmin phpmyadmin/app-password-confirm password $pass" | debconf-set-selections
+    echo "phpmyadmin phpmyadmin/mysql/admin-pass password $pass" | debconf-set-selections
+    echo "phpmyadmin phpmyadmin/mysql/app-pass password $pass" | debconf-set-selections
+    echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2" | debconf-set-selections
+    apt-get install -y -qq phpmyadmin
+    sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-available/phpmyadmin.conf
+    sudo a2enconf phpmyadmin
+    sudo service apache2 restart
+    echo "PhpMyAdmin is now available at http://localhost:8080/phpmyadmin/\n"
 fi
 
 # Create Database
 # ---------------
-mysql -uroot -e 'create database `yourdb`;'
-mysql -uroot -e 'grant all on `yourdb`.* to `root@localhost`;'
+mysql -uroot -e 'create database `$dbname`;'
+mysql -uroot -e 'grant all on `$dbname`.* to `root@localhost`;'
 
 # Setting Alias
 
