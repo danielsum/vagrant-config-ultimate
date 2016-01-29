@@ -20,7 +20,7 @@ Install [Vagrant](https://www.vagrantup.com/downloads.html) and [Virtual Box](ht
 
 Simply copy-paste install.sh or in your terminal at your project root
 
-    curl -O https://raw.github.com/danielsum/vagrant-config-ultimate/master/\{Vagrantfile,install.sh\}
+    curl -O https://raw.githubusercontent.com/danielsum/vagrant-config-ultimate/master/\{Vagrantfile,install.sh\}
     
     vagrant up
     
